@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="/Miniblog/Controller/index.js" defer></script>
-    <link rel="stylesheet" href="../Style/style.css">
+    <script src="index.js" defer></script>
+    <link rel="stylesheet" href="./Style/style.css">
     <title>Miniblog</title>
 </head>
 
@@ -21,12 +21,12 @@
             <?php endif; ?>
             <nav>
                 <ul>
-                    <li><a href="/Miniblog/Controller/index.php?action=home">Home</a></li>
-                    <li><a href="/Miniblog/Controller/index.php?action=showArchives">Archives</a></li>
+                    <li><a href="index.php?action=home">Home</a></li>
+                    <li><a href="index.php?action=showArchives">Archives</a></li>
 
                     <?php if ($isAdmin): ?>
-                        <li><a href="/Miniblog/Controller/index.php?action=preCreatePost">Ajouter un Billet</a></li>
-                        <li><a href="/Miniblog/Controller/index.php?action=administration">Administration</a></li>
+                        <li><a href="index.php?action=preCreatePost">Ajouter un Billet</a></li>
+                        <li><a href="index.php?action=administration">Administration</a></li>
                     <?php endif; ?>
                 </ul>
             </nav>
@@ -34,10 +34,10 @@
             <div class="right-nav">
                 <ul>
                     <?php if ($loggedUser): ?>
-                        <li><a href="/Miniblog/Controller/index.php?action=profile">Mon Profil</a></li>
+                        <li><a href="index.php?action=profile">Mon Profil</a></li>
                     <?php else: ?>
-                        <li><a href="/Miniblog/Controller/index.php?action=login">Connexion</a></li>
-                        <li><a href="/Miniblog/Controller/index.php?action=register">Inscription</a></li>
+                        <li><a href="index.php?action=login">Connexion</a></li>
+                        <li><a href="index.php?action=register">Inscription</a></li>
                     <?php endif; ?>
                 </ul>
             </div>
@@ -51,7 +51,7 @@
                 <p style="margin-top: 2rem;"><em class="credit">Réalisé par Tom MURPHY</em></p>
             </div>
             <div class="hero_img_container">
-                <img src="/Miniblog/assets/bee.png" alt="">
+                <img src="./assets/bee.png" alt="">
             </div>
         </div>
     </section>
@@ -74,7 +74,7 @@
             <div class="post-container">
                 <?php foreach ($lastPosts as $post): ?>
                     <a class="linkBlog"
-                        href="/Miniblog/Controller/index.php?action=blogDetails&id=<?php echo $post['id_billets']; ?>">
+                        href="index.php?action=blogDetails&id=<?php echo $post['id_billets']; ?>">
                         <div class="post-card">
                             <?php if (!empty($post['photo_post'])): ?>
                                 <div class="post-image-container">

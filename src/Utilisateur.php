@@ -6,7 +6,6 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'utilisateurs')]
-
 class Utilisateur
 {
     #[ORM\Id]
@@ -14,7 +13,7 @@ class Utilisateur
     #[ORM\GeneratedValue]
     private int $id;
 
-    #[ORM\Column(name: 'login', length: 255)]
+    #[ORM\Column(name: 'login', length: 255, unique: true)]
     private string $login;
 
     #[ORM\Column(name: 'password', length: 255)]
@@ -24,45 +23,54 @@ class Utilisateur
     {
         return $this->id;
     }
-    private function setIdUser($id): void
-    {
-        $this->id = $id;
-    }
+
     public function getLogin(): string
     {
         return $this->login;
     }
-    private function setLogin($login): void
+
+    public function setLogin(string $login): void
     {
         $this->login = $login;
     }
+
     public function getPwd(): string
     {
         return $this->password;
     }
-    private function setPwd($password)
+
+    public function setPwd(string $password): void
     {
         $this->password = password_hash($password, PASSWORD_BCRYPT);
     }
-    public function verifyPwd($password): bool
+
+    public function verifyPwd(string $password): bool
     {
         return password_verify($password, $this->password);
     }
-    public static function createUser(EntityManagerInterface $entityManagerInterface, string $login, string $password): Utilisateur
+
+    public static function createUser(EntityManagerInterface $entityManager, string $login, string $password): Utilisateur
     {
+        $existingUser = self::findByLogin($entityManager, $login);
+        if ($existingUser) {
+            throw new Exception("User already exists.");
+        }
+
         $newUser = new self();
         $newUser->setLogin($login);
         $newUser->setPwd($password);
 
-        $entityManagerInterface->persist($newUser);
-        $entityManagerInterface->flush();
+        $entityManager->persist($newUser);
+        $entityManager->flush();
 
         return $newUser;
     }
-    function findByLogin(EntityManagerInterface $entityManager, string $login): ?self
+
+    public static function findByLogin(EntityManagerInterface $entityManager, string $login): ?self
     {
         return $entityManager->getRepository(self::class)->findOneBy(['login' => $login]);
     }
+
     public static function isLoggedIn(EntityManagerInterface $entityManager): ?Utilisateur
     {   
         if (!isset($_SESSION['user_id'])) {
@@ -71,10 +79,10 @@ class Utilisateur
     
         return $entityManager->getRepository(self::class)->find($_SESSION['user_id']);
     }
-    
+
     public static function isAdmin(EntityManagerInterface $entityManager): bool
     {
         $user = self::isLoggedIn($entityManager);
-        return $user && $user->getIdUser() === '5';
+        return $user && $user->getIdUser() === 4;
     }
 }

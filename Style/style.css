@@ -382,6 +382,8 @@ a {
     align-items: center;
     height: 100vh;
     margin: 0;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 .login-form {
