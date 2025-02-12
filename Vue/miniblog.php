@@ -13,11 +13,9 @@
     <section class="hero_section">
         <header>
             <?php if ($loggedUser): ?>
-                <?php if (!empty($comments)): ?>
-                    <div class="logo">
-                        <!-- <img src="/Miniblog/uploads/<?= $comments['photo_profile'] ?>" alt=""> -->
-                    </div>
-                <?php endif; ?>
+                <div class="logo">
+                    <!-- <img src="/Miniblog/uploads/<?= $comments['photo_profile'] ?>" alt=""> -->
+                </div>
             <?php endif; ?>
             <nav>
                 <ul>
@@ -69,33 +67,28 @@
         </section>
 
         <div class="thanks"><em>Bonne lecture...</em></div>
-        <!-- <section class="blog_section">
-            <?php $lastPosts = showThreePost(); ?>
+        <section class="blog_section">
+            <?php $messageRepository = $entityManager->getRepository(Message::class); ?>
+            <?php $lastPosts = Message::getLastMessages($entityManager); ?>
             <div class="post-container">
                 <?php foreach ($lastPosts as $post): ?>
-                    <a class="linkBlog"
-                        href="index.php?action=blogDetails&id=<?php echo $post['id_billets']; ?>">
+                    <a class="linkBlog" href="index.php?action=blogDetails&id=<?= $post->getId(); ?>">
                         <div class="post-card">
-                            <?php if (!empty($post['photo_post'])): ?>
-                                <div class="post-image-container">
-                                    <img src="/Miniblog/uploads/<?php echo htmlspecialchars($post['photo_post']); ?>"
-                                        alt="Image de <?php echo htmlspecialchars($post['titre']); ?>" class="post-image">
-                                </div>
-                            <?php endif; ?>
-
                             <div class="post-content-container">
-                                <h2 class="post-title"><?= htmlspecialchars($post['titre']); ?></h2>
-                                <p class="post-excerpt"><?= htmlspecialchars($post['contenu']); ?></p>
+                                <h2 class="post-title"><?= htmlspecialchars($post->getTitle()); ?></h2>
+                                <p class="post-excerpt"><?= htmlspecialchars($post->getContenu()); ?></p>
                                 <div class="post-footer">
                                     <span class="post-read-more">Voir plus</span>
-                                    <small class="post-date">Posté le : <?= htmlspecialchars($post['date_post']); ?></small>
+                                    <small class="post-date">
+                                        Posté le : <?= htmlspecialchars($post->getPostedAt()->format('d/m/Y H:i')); ?>
+                                    </small>
                                 </div>
                             </div>
                         </div>
                     </a>
                 <?php endforeach; ?>
             </div>
-        </section> -->
+        </section>
     </main>
 </body>
 

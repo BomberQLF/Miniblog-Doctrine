@@ -62,24 +62,28 @@ switch ($action) {
         break;
 }
 
-var_dump($_SESSION['user_id']);
+// var_dump($_SESSION['user_id']);
 
-$rep = $entityManager->getRepository('Message');
-$rep->find(2); // Renvoie le message à l'ID 2
-$contenus = $rep->findAll(); // Renvoie un tableau (liste) de tous les messages
-$id = $rep->findBy(array('contenu' => 'ID'));
+// $rep = $entityManager->getRepository('Message');
+// $rep->find(2); // Renvoie le message à l'ID 2
+// $contenus = $rep->findAll(); // Renvoie un tableau (liste) de tous les messages
+// $id = $rep->findBy(array('contenu' => 'ID'));
 
-$repUser = $entityManager->getRepository('Utilisateur');
-$uuid1 = $repUser->find(1);
-// var_dump($uuid1);
+// $repUser = $entityManager->getRepository('Utilisateur');
+// $uuid1 = $repUser->find(1);
 
 // $msg1 = new Message();
-// // $msg1->setContenu('ceci est mon premier message');
-// $msg1->setUser($uuid1);
-
+// $msg1->setTitle("Mon premier message");
+// $msg1->setContenu("Ceci est le contenu de mon message.");
+// $msg1->setPostedAt(new \DateTime()); 
+// $msg1->setUser($loggedUser);
 // $entityManager->persist($msg1);
-// $entityManager->flush();
 
+$entityManager->flush();
+
+// echo "Message créé avec succès !";
+// var_dump($msg1->getId());
+// die();
 // $newUser = Utilisateur::createUser($entityManager, 'test', '123');
 
 // var_dump($contenus);

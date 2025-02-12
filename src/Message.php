@@ -1,50 +1,65 @@
 <?php
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\EntityManagerInterface;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'messages')]
-
 class Message
 {
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue]
     private int $id;
-    #[ORM\Column(length: 255)]
+
+    #[ORM\Column(length: 255, nullable: false)]
+    private string $title;
+
+    #[ORM\Column(length: 255, nullable: false)]
     private string $contenu;
-    #[ORM\Column(name: 'posted_at', nullable: true)]
-    private $postedAt;
+
+    #[ORM\Column(name: 'posted_at', type: 'datetime', nullable: true)]
+    private ?\DateTime $postedAt;
+
     #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
     #[ORM\JoinColumn(nullable: false)]
     private Utilisateur $user;
 
-
-
-    function getId(): int
+    public function getId(): int
     {
         return $this->id;
     }
-    function setId($id): void
+
+    public function getTitle(): string
     {
-        $this->id = $id;
+        return $this->title;
     }
-    function setContenu($contenu): void
+
+    public function setTitle(string $title): void
     {
-        $this->contenu = $contenu;
+        $this->title = $title;
     }
-    function getContenu(): string
+
+    public function getContenu(): string
     {
         return $this->contenu;
     }
-    function setPostedAt($time): void
+
+    public function setContenu(string $contenu): void
     {
-        $this->postedAt = $time;
+        $this->contenu = $contenu;
     }
-    function getPostedAt(): string
+
+    public function getPostedAt(): ?\DateTime
     {
         return $this->postedAt;
     }
+
+    public function setPostedAt(\DateTime $time): void
+    {
+        $this->postedAt = $time;
+    }
+
     public function setUser(Utilisateur $user): void
     {
         $this->user = $user;
@@ -53,5 +68,10 @@ class Message
     public function getUser(): Utilisateur
     {
         return $this->user;
+    }
+
+    public static function getLastMessages(EntityManagerInterface $entityManager): array
+    {
+        return $entityManager->getRepository(self::class)->findBy([], ['id' => 'DESC'], 3);
     }
 }
