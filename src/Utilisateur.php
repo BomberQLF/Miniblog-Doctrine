@@ -44,10 +44,11 @@ class Utilisateur
     {
         $this->password = password_hash($password, PASSWORD_BCRYPT);
     }
-    public function verifyPwd($password): bool {
+    public function verifyPwd($password): bool
+    {
         return password_verify($password, $this->password);
     }
-    public static function createUser(EntityManagerInterface $entityManagerInterface, string $login, string $password): Utilisateur 
+    public static function createUser(EntityManagerInterface $entityManagerInterface, string $login, string $password): Utilisateur
     {
         $newUser = new self();
         $newUser->setLogin($login);
@@ -62,5 +63,18 @@ class Utilisateur
     {
         return $entityManager->getRepository(self::class)->findOneBy(['login' => $login]);
     }
+    public static function isLoggedIn(EntityManagerInterface $entityManager): ?Utilisateur
+    {   
+        if (!isset($_SESSION['user_id'])) {
+            return null; 
+        }
     
+        return $entityManager->getRepository(self::class)->find($_SESSION['user_id']);
+    }
+    
+    public static function isAdmin(EntityManagerInterface $entityManager): bool
+    {
+        $user = self::isLoggedIn($entityManager);
+        return $user && $user->getIdUser() === '5';
+    }
 }

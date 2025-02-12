@@ -12,10 +12,10 @@
 <body>
     <section class="hero_section">
         <header>
-            <?php if (isLoggedIn()): ?>
+            <?php if ($loggedUser): ?>
                 <?php if (!empty($comments)): ?>
                     <div class="logo">
-                        <img src="/Miniblog/uploads/<?= $comments['photo_profile'] ?>" alt="">
+                        <!-- <img src="/Miniblog/uploads/<?= $comments['photo_profile'] ?>" alt=""> -->
                     </div>
                 <?php endif; ?>
             <?php endif; ?>
@@ -24,7 +24,7 @@
                     <li><a href="/Miniblog/Controller/index.php?action=home">Home</a></li>
                     <li><a href="/Miniblog/Controller/index.php?action=showArchives">Archives</a></li>
 
-                    <?php if (isAdmin()): ?>
+                    <?php if ($isAdmin): ?>
                         <li><a href="/Miniblog/Controller/index.php?action=preCreatePost">Ajouter un Billet</a></li>
                         <li><a href="/Miniblog/Controller/index.php?action=administration">Administration</a></li>
                     <?php endif; ?>
@@ -33,7 +33,7 @@
 
             <div class="right-nav">
                 <ul>
-                    <?php if (isLoggedIn()): ?>
+                    <?php if ($loggedUser): ?>
                         <li><a href="/Miniblog/Controller/index.php?action=profile">Mon Profil</a></li>
                     <?php else: ?>
                         <li><a href="/Miniblog/Controller/index.php?action=login">Connexion</a></li>
@@ -69,14 +69,13 @@
         </section>
 
         <div class="thanks"><em>Bonne lecture...</em></div>
-        <section class="blog_section">
+        <!-- <section class="blog_section">
             <?php $lastPosts = showThreePost(); ?>
             <div class="post-container">
                 <?php foreach ($lastPosts as $post): ?>
                     <a class="linkBlog"
                         href="/Miniblog/Controller/index.php?action=blogDetails&id=<?php echo $post['id_billets']; ?>">
                         <div class="post-card">
-                            <!-- Container pour l'image -->
                             <?php if (!empty($post['photo_post'])): ?>
                                 <div class="post-image-container">
                                     <img src="/Miniblog/uploads/<?php echo htmlspecialchars($post['photo_post']); ?>"
@@ -84,7 +83,6 @@
                                 </div>
                             <?php endif; ?>
 
-                            <!-- Contenu du post -->
                             <div class="post-content-container">
                                 <h2 class="post-title"><?= htmlspecialchars($post['titre']); ?></h2>
                                 <p class="post-excerpt"><?= htmlspecialchars($post['contenu']); ?></p>
@@ -97,7 +95,7 @@
                     </a>
                 <?php endforeach; ?>
             </div>
-        </section>
+        </section> -->
     </main>
 </body>
 
