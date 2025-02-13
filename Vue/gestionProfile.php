@@ -72,7 +72,7 @@
             <a class="logout-link" href="index.php?action=logout">Se Déconnecter</a>
         </div>
         <div class="profile_img">
-            <!-- <img src="/Miniblog/uploads/<?php echo getCurrentProfilePicture($_SESSION['user_id']) ?>" alt=""> -->
+            <img src="uploads/<?php echo htmlspecialchars(urldecode($loggedUser->getPhotoProfile())); ?>" alt="Photo de profil">        
         </div>
     </section>
 </body>

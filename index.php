@@ -36,7 +36,7 @@ switch ($action) {
         include('./Vue/login.php');
         break;
 
-    case 'register': 
+    case 'register':
         include('./Vue/inscription.php');
         break;
 
@@ -59,12 +59,54 @@ switch ($action) {
 
     case 'profile':
         include('./Vue/gestionProfile.php');
+        break;
 
-    case 'logout': 
+    case 'logout':
         session_unset();
         session_destroy();
         include('./Vue/miniblog.php');
         break;
+
+    case 'upload':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['photo_profile'])) {
+            $file = $_FILES['photo_profile'];
+
+            if ($file['error'] === UPLOAD_ERR_OK) {
+                $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                $fileType = mime_content_type($file['tmp_name']);
+
+                if (!in_array($fileType, $allowedTypes)) {
+                    echo "Format d'image non supporté.";
+                    exit();
+                }
+
+                $uploadDir = 'uploads/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+
+                // Nettoyer le nom du fichier
+                $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+                $fileName = uniqid() . '.' . $extension; 
+
+                $filePath = $uploadDir . $fileName;
+
+                if (move_uploaded_file($file['tmp_name'], $filePath)) {
+                    $loggedUser->setPhotoProfile($fileName);
+                    $entityManager->persist($loggedUser);
+                    $entityManager->flush();
+
+                    header("Location: index.php?action=profile");
+                    exit();
+                } else {
+                    echo "Erreur lors de l'upload du fichier.";
+                }
+            } else {
+                echo "Erreur lors de l'upload : Code " . $file['error'];
+            }
+        }
+        exit;
+
 
     default:
         include('./Vue/miniblog.php');
