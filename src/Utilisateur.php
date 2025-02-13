@@ -19,6 +19,9 @@ class Utilisateur
     #[ORM\Column(name: 'password', length: 255)]
     private string $password;
 
+    #[ORM\Column(name: 'photo_profile', length: 255, nullable: true)]
+    private ?string $photoProfile = null;
+
     public function getIdUser(): int
     {
         return $this->id;
@@ -47,6 +50,16 @@ class Utilisateur
     public function verifyPwd(string $password): bool
     {
         return password_verify($password, $this->password);
+    }
+
+    public function getPhotoProfile(): ?string
+    {
+        return $this->photoProfile;
+    }
+
+    public function setPhotoProfile(?string $photoProfile): void
+    {
+        $this->photoProfile = $photoProfile;
     }
 
     public static function createUser(EntityManagerInterface $entityManager, string $login, string $password): Utilisateur
