@@ -57,6 +57,15 @@ switch ($action) {
         }
         break;
 
+    case 'profile':
+        include('./Vue/gestionProfile.php');
+
+    case 'logout': 
+        session_unset();
+        session_destroy();
+        include('./Vue/miniblog.php');
+        break;
+
     default:
         include('./Vue/miniblog.php');
         break;
