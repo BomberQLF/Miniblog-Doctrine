@@ -74,4 +74,14 @@ class Message
     {
         return $entityManager->getRepository(self::class)->findBy([], ['id' => 'DESC'], 3);
     }
+    public static function getAllMessages(EntityManagerInterface $entityManeger): array
+    {
+        return $entityManeger->getRepository(self::class)->findAll();
+    }
+    public static function deleteMessage(EntityManagerInterface $entityManager ,$id): void
+    {
+        $message = $entityManager->getRepository(self::class)->find($id);
+        $entityManager->remove($message);
+        $entityManager->flush();
+    }
 }

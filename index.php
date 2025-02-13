@@ -4,6 +4,7 @@ require_once('bootstrap.php');
 
 $loggedUser = Utilisateur::isLoggedIn($entityManager);
 $isAdmin = Utilisateur::isAdmin($entityManager);
+$allMessages = Message::getAllMessages($entityManager);
 
 $action = $_GET['action'] ?? '';
 
@@ -58,7 +59,7 @@ switch ($action) {
         break;
 
     case 'profile':
-        include('./Vue/gestionProfile.php');
+        $loggedUser ? include('./Vue/gestionProfile.php') : include('./Vue/login.php');
         break;
 
     case 'logout':
@@ -87,7 +88,7 @@ switch ($action) {
 
                 // Nettoyer le nom du fichier
                 $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-                $fileName = uniqid() . '.' . $extension; 
+                $fileName = uniqid() . '.' . $extension;
 
                 $filePath = $uploadDir . $fileName;
 
@@ -106,6 +107,19 @@ switch ($action) {
             }
         }
         exit;
+
+    case 'deletePost':
+        if ($isAdmin) {
+            $id = $_GET['id'];
+            
+            if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+                Message::deleteMessage($entityManager, $id);
+                include('./Vue/archives.php');
+            }
+        } else {
+            include('./Vue/login.php');
+        }
+        break;
 
 
     default:
