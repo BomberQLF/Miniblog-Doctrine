@@ -121,6 +121,10 @@ switch ($action) {
         }
         break;
 
+    // case 'blogDetails':
+    //     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    //         $id = $_GET['id'];
+    //     }
 
     default:
         include('./Vue/miniblog.php');

@@ -11,7 +11,7 @@
 
 <body>
     <header>
-        <?php if (isLoggedIn()): ?>
+        <?php if ($loggedUser): ?>
             <div class="logo">
                 <img src="path-to-logo.png" alt="">
             </div>
@@ -21,7 +21,7 @@
                 <li><a href="/Miniblog/Controller/index.php?action=home">Home</a></li>
                 <li><a href="/Miniblog/Controller/index.php?action=showArchives">Archives</a></li>
 
-                <?php if (isAdmin()): ?>
+                <?php if ($isAdmin): ?>
                     <li><a href="/Miniblog/Controller/index.php?action=preCreatePost">Ajouter un Billet</a></li>
                     <li><a href="/Miniblog/Controller/index.php?action=administration">Administration</a></li>
                 <?php endif; ?>
@@ -30,7 +30,7 @@
 
         <div class="right-nav">
             <ul>
-                <?php if (isLoggedIn()): ?>
+                <?php if ($loggedUser): ?>
                     <li><a href="/Miniblog/Controller/index.php?action=profile">Mon Profil</a></li>
                 <?php else: ?>
                     <li><a href="/Miniblog/Controller/index.php?action=login">Connexion</a></li>
@@ -42,7 +42,7 @@
 
     <main>
         <div class="introduction">
-            <?php if (isLoggedIn()): ?>
+            <?php if ($loggedUser): ?>
                 <p>Découvrez les détails de l'article ci-dessous. Explorez le contenu complet et laissez vos commentaires
                     pour une discussion plus approfondie.</p>
             <?php endif; ?>
@@ -50,7 +50,7 @@
 
         <?php if (isset($_GET['id'])): ?>
             <?php
-            $post = showPostById($_GET['id']);
+            // $post = showPostById($_GET['id']);
 
             if ($post): ?>
                 <div class="post-detail">
@@ -66,7 +66,7 @@
                     </div>
                 </div>
                 <div class="comment_part">
-                    <?php if (isLoggedIn()): ?>
+                    <?php if ($loggedUser): ?>
                         <h2>Commentaires</h2>
                         <form action="/Miniblog/Controller/index.php?action=postComment&id=<?= $post['id_billets']; ?>"
                             method="POST">
@@ -107,7 +107,7 @@
                                         <small>Posté par : <?php echo htmlspecialchars($comment['prenom'] . ' ' . $comment['nom']); ?>
                                             le <?php echo htmlspecialchars($comment['date_post']); ?></small>
 
-                                        <?php if (isAdmin()): ?>
+                                        <?php if ($isAdmin): ?>
                                             <a
                                                 href="/Miniblog/Controller/index.php?action=deleteComment&id=<?php echo $comment['id_commentaires']; ?>">Supprimer</a>
                                         <?php endif; ?>
