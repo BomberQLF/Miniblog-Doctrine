@@ -19,7 +19,7 @@ switch ($action) {
 
     case 'preCreatePost':
         if ($isAdmin) {
-            include('./Vue/create_post.php');
+            include('./Vue/createPost.php');
         } else {
             echo "Accès refusé.";
         }
@@ -50,22 +50,24 @@ switch ($action) {
 
             if ($user && $user->verifyPwd($pwd)) {
                 $_SESSION['user_id'] = $user->getIdUser();
-                include('./Vue/miniblog.php');
+                header("Location: index.php?action=home");
+                exit();
             } else {
-                include('./Vue/login.php');
-                echo "Invalid Logins";
+                header("Location: index.php?action=login&error=invalid");
+                exit();
             }
         }
         break;
 
     case 'profile':
-        $loggedUser ? include('./Vue/gestionProfile.php') : include('./Vue/login.php');
+        $loggedUser ? include('./Vue/gestionProfile.php') : header("Location: index.php?action=login");
         break;
 
     case 'logout':
         session_unset();
         session_destroy();
-        include('./Vue/miniblog.php');
+        header("Location: index.php?action=home");
+        exit();
         break;
 
     case 'upload':
@@ -86,17 +88,15 @@ switch ($action) {
                     mkdir($uploadDir, 0777, true);
                 }
 
-                // Nettoyer le nom du fichier
                 $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
                 $fileName = uniqid() . '.' . $extension;
-
                 $filePath = $uploadDir . $fileName;
 
                 if (move_uploaded_file($file['tmp_name'], $filePath)) {
                     $loggedUser->setPhotoProfile($fileName);
                     $entityManager->persist($loggedUser);
                     $entityManager->flush();
-
+                    
                     header("Location: index.php?action=profile");
                     exit();
                 } else {
@@ -111,52 +111,40 @@ switch ($action) {
     case 'deletePost':
         if ($isAdmin) {
             $id = $_GET['id'];
-            
             if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 Message::deleteMessage($entityManager, $id);
-                include('./Vue/archives.php');
+                header("Location: index.php?action=showArchives");
+                exit();
             }
         } else {
-            include('./Vue/login.php');
+            header("Location: index.php?action=login");
+            exit();
         }
         break;
 
-    // case 'blogDetails':
-    //     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    //         $id = $_GET['id'];
-    //     }
+    case 'createPost':
+        if ($isAdmin) {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                if (!empty($_POST['title']) && !empty($_POST['contenu']) && !empty($_POST['user_id'])) {
+                    $title = $_POST['title'];
+                    $contenu = $_POST['contenu'];
+                    $user_id = $_POST['user_id'];
+
+                    Message::createMessage($entityManager, $title, $contenu, $user_id);
+
+                    header("Location: index.php?action=showArchives");
+                    exit();
+                } else {
+                    echo "Erreur : Tous les champs sont requis.";
+                }
+            }
+        } else {
+            header("Location: index.php?action=login");
+            exit();
+        }
+        break;
 
     default:
         include('./Vue/miniblog.php');
         break;
 }
-
-// var_dump($_SESSION['user_id']);
-
-// $rep = $entityManager->getRepository('Message');
-// $rep->find(2); // Renvoie le message à l'ID 2
-// $contenus = $rep->findAll(); // Renvoie un tableau (liste) de tous les messages
-// $id = $rep->findBy(array('contenu' => 'ID'));
-
-// $repUser = $entityManager->getRepository('Utilisateur');
-// $uuid1 = $repUser->find(1);
-
-// $msg1 = new Message();
-// $msg1->setTitle("Mon premier message");
-// $msg1->setContenu("Ceci est le contenu de mon message.");
-// $msg1->setPostedAt(new \DateTime()); 
-// $msg1->setUser($loggedUser);
-// $entityManager->persist($msg1);
-
-$entityManager->flush();
-
-// echo "Message créé avec succès !";
-// var_dump($msg1->getId());
-// die();
-// $newUser = Utilisateur::createUser($entityManager, 'test', '123');
-
-// var_dump($contenus);
-// foreach ($contenus as $contenu) {
-//     echo $contenu->getContenu();
-// }
-?>
