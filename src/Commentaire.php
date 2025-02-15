@@ -98,4 +98,11 @@ class Commentaire
             $entityManager->flush();
         }
     }
+
+    public static function deleteCommentById(EntityManagerInterface $entityManager, $idComment):void 
+    {
+        $rep = $entityManager->getRepository(self::class)->find($idComment);
+        $entityManager->remove($rep);
+        $entityManager->flush();
+    }
 }

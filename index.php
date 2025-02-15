@@ -159,17 +159,39 @@ switch ($action) {
         break;
 
     case 'postComment':
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contenu'])) {
-            $messageId = isset($_POST['message_id']) ? (int) $_POST['message_id'] : null;
-            $userId = isset($_POST['user_id']) ? (int) $_POST['user_id'] : null;
-            $contenu = trim($_POST['contenu']);
+        if ($isAdmin) {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contenu'])) {
+                $messageId = isset($_POST['message_id']) ? (int) $_POST['message_id'] : null;
+                $userId = isset($_POST['user_id']) ? (int) $_POST['user_id'] : null;
+                $contenu = trim($_POST['contenu']);
 
-            if ($messageId && $userId && !empty($contenu)) {
-                Commentaire::postComment($entityManager, $messageId, $userId, $contenu);
-                header("Location: index.php?action=blogDetails&id=$messageId");
-                exit;
-            } else {
-                echo "Erreur : tous les champs sont requis.";
+                if ($messageId && $userId && !empty($contenu)) {
+                    Commentaire::postComment($entityManager, $messageId, $userId, $contenu);
+                    header("Location: index.php?action=blogDetails&id=$messageId");
+                    exit;
+                } else {
+                    echo "Erreur : tous les champs sont requis.";
+                }
+            }
+        }
+        break;
+
+    case 'deleteComment':
+        if ($isAdmin) {
+            if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+                if (!empty($_GET['id'])) {
+                    $idComment = $_GET['id'];
+
+                    if ($idComment) {
+                        Commentaire::deleteCommentById($entityManager, $idComment);
+
+                        include('./Vue/archives.php'); 
+                    } else {
+                        echo "ID du commentaire invalide.";
+                    }
+                } else {
+                    echo "L'ID n'exite pas.";
+                }
             }
         }
         break;
