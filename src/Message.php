@@ -78,27 +78,41 @@ class Message
     {
         return $entityManeger->getRepository(self::class)->findAll();
     }
-    public static function deleteMessage(EntityManagerInterface $entityManager ,$id): void
+    public static function deleteMessage(EntityManagerInterface $entityManager, $id): void
     {
         $message = $entityManager->getRepository(self::class)->find($id);
         $entityManager->remove($message);
         $entityManager->flush();
     }
-    public static function createMessage(EntityManagerInterface $entityManager, string $title, string $contenu, int $user_id): void 
+    public static function createMessage(EntityManagerInterface $entityManager, string $title, string $contenu, int $user_id): void
     {
         $user = $entityManager->getRepository(Utilisateur::class)->find($user_id);
-    
+
         $message = new Message();
         $message->setTitle($title);
         $message->setContenu($contenu);
         $message->setPostedAt(new \DateTime());
         $message->setUser($user);
-    
+
         $entityManager->persist($message);
         $entityManager->flush();
     }
-    public static function showMessageById(EntityManagerInterface $entityManager, $id): ?Message 
+    public static function showMessageById(EntityManagerInterface $entityManager, $id): ?Message
     {
         return $entityManager->getRepository(self::class)->find($id);
     }
+
+    public static function updatePost(EntityManagerInterface $entityManager, int $postId, string $title ,string $contenu): ?self
+    {
+        $post = $entityManager->getRepository(self::class)->find($postId);
+        $post->setContenu($contenu);
+        $post->setTitle($title);
+
+        $entityManager->persist($post);
+        $entityManager->flush();
+
+        return $post;
+    }
+
+
 }

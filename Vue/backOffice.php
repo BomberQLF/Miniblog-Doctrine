@@ -52,25 +52,24 @@
                     <a href="index.php?action=deleteUser&id=<?php echo $allUser->getIdUser(); ?>"
                         class="delete-user">Supprimer l'utilisateur</a>
                     <button class="edit-button"
-                        onclick="showUpdateForm(<?php echo $allUser['id_utilisateurs']; ?>)">Modifier</button>
+                        onclick="showUpdateForm(<?php echo $allUser->getIdUser(); ?>)">Modifier</button>
 
                     <!-- Formulaire caché par défaut -->
-                    <div id="update-form-<?php echo $allUser['id_utilisateurs']; ?>" class="update-form"
-                        style="display: none;">
-                        <form action="index.php?action=updateUser&id=<?php echo $allUser['id_utilisateurs']; ?>"
-                            method="POST" class="update-form">
+                    <div id="update-form-<?php echo $allUser->getIdUser(); ?>" class="update-form" style="display: none;">
+                        <form action="index.php?action=updateUser&id=<?php echo $allUser->getIdUser(); ?>" method="POST"
+                            class="update-form">
                             <h1 class="update-title">Mettre à Jour l'Utilisateur</h1>
 
                             <!-- Champ de mise à jour du login uniquement -->
-                            <label for="login-<?php echo $allUser['id_utilisateurs']; ?>" class="update-label">Login
+                            <label for="login-<?php echo $allUser->getIdUser(); ?>" class="update-label">Login
                                 :</label>
-                            <input type="text" name="login" id="login-<?php echo $allUser['id_utilisateurs']; ?>"
-                                class="update-input" value="<?php echo htmlspecialchars($allUser['login']); ?>"
+                            <input type="text" name="login" id="login-<?php echo $allUser->getIdUser(); ?>"
+                                class="update-input" value="<?php echo htmlspecialchars($allUser->getLogin()); ?>"
                                 required><br>
 
                             <button type="submit" class="update-button">Enregistrer les modifications</button>
                             <button type="button" class="update-cancel-button"
-                                onclick="hideUpdateForm(<?php echo $allUser['id_utilisateurs']; ?>)">Annuler</button>
+                                onclick="hideUpdateForm(<?php echo $allUser->getIdUser(); ?>)">Annuler</button>
                         </form>
                     </div>
                 </div>
@@ -84,33 +83,32 @@
                 <div class="post-item">
                     <h3 class="post-title"><?= htmlspecialchars($allMessage->getTitle()) ?></h3>
                     <p class="post-content"><?= htmlspecialchars($allMessage->getContenu()) ?></p>
-                    <small class="post-date"><?= htmlspecialchars($allMessage->getPostedAt()) ?> - ID:
-                        <?= htmlspecialchars($totalPosts['id_billets']) ?></small>
+                    <small class="post-date"><?= htmlspecialchars($allMessage->getPostedAt()->format('d/m/Y H:i')) ?> - ID:
+                        <?= htmlspecialchars($allMessage->getId()) ?></small>
 
                     <?php if ($isAdmin): ?>
-                        <a href="index.php?action=deletePost&id=<?= htmlspecialchars($totalPosts['id_billets']) ?>"
+                        <a href="index.php?action=deletePost&id=<?= htmlspecialchars($allMessage->getId()) ?>"
                             class="delete-post">Supprimer</a>
-                        <button class="edit-button" onclick="showPostUpdateForm(<?= $totalPosts['id_billets']; ?>)">
+                        <button class="edit-button" onclick="showPostUpdateForm(<?= $allMessage->getId(); ?>)">
                             Modifier le billet
                         </button>
-                        <!-- Formulaire caché par défaut -->
-                        <form action="index.php?action=updatePost&id=<?= $totalPosts['id_billets']; ?>" method="POST"
-                            class="update-form-post" id="update-form-post-<?= $totalPosts['id_billets']; ?>"
-                            style="display: none;">
-                            <label for="titre-<?= $totalPosts['id_billets']; ?>" class="update-label-post">Titre :</label>
-                            <input type="text" name="titre" id="titre-<?= $totalPosts['id_billets']; ?>"
-                                class="update-input-post" value="<?= htmlspecialchars($totalPosts['titre']); ?>"
-                                placeholder="Nouveau titre" required><br>
 
-                            <label for="contenu-<?= $totalPosts['id_billets']; ?>" class="update-label-post">Contenu
-                                :</label><br>
-                            <textarea name="contenu" id="contenu-<?= $totalPosts['id_billets']; ?>" class="update-textarea-post"
+                        <!-- Formulaire caché par défaut -->
+                        <form action="index.php?action=updatePost&id=<?= $allMessage->getId(); ?>" method="POST"
+                            class="update-form-post" id="update-form-post-<?= $allMessage->getId(); ?>" style="display: none;">
+                            <label for="title-<?= $allMessage->getId(); ?>" class="update-label-post">Titre :</label>
+                            <input type="text" name="title" id="titre-<?= $allMessage->getId(); ?>" class="update-input-post"
+                                value="<?= htmlspecialchars($allMessage->getTitle()); ?>" placeholder="Nouveau titre"
+                                required><br>
+
+                            <label for="contenu-<?= $allMessage->getId(); ?>" class="update-label-post">Contenu :</label><br>
+                            <textarea name="contenu" id="contenu-<?= $allMessage->getId(); ?>" class="update-textarea-post"
                                 placeholder="Nouveau contenu"
-                                required><?= htmlspecialchars($totalPosts['contenu']); ?></textarea><br>
+                                required><?= htmlspecialchars($allMessage->getContenu()); ?></textarea><br>
 
                             <button type="submit" class="update-button-post">Enregistrer les modifications</button>
                             <button type="button" class="update-cancel-button-post"
-                                onclick="hidePostUpdateForm(<?= $totalPosts['id_billets']; ?>)">Annuler</button>
+                                onclick="hidePostUpdateForm(<?= $allMessage->getId(); ?>)">Annuler</button>
                         </form>
                     <?php endif ?>
                 </div>
@@ -119,26 +117,26 @@
         </div>
         <div class="last-column">
             <h2 class="section-title">Liste des commentaires</h2>
-            <?php $listComment = showAllComment(); ?>
+            <?php $listComment = Commentaire::showAllComments($entityManager); ?>
             <?php foreach ($listComment as $listComments): ?>
                 <div class="comments-item">
-                    <p class="comment-title"><?= $listComments['contenu'] ?></p>
-                    <small><?= $listComments['date_post']; ?></small>
-                    <a href="index.php?action=deleteComment&id=<?= $listComments['id_commentaires']; ?>"
+                    <p class="comment-title"><?= htmlspecialchars($listComments->getCommentaire()) ?></p>
+                    <small><?= $listComments->getPostedAt()->format('Y-m-d H:i:s'); ?></small>
+                    <a href="index.php?action=deleteComment&id=<?= $listComments->getId(); ?>"
                         class="delete-post">Supprimer</a>
 
-                    <form id="update-form-<?= $listComments['id_commentaires']; ?>"
-                        action="index.php?action=updateComment&id=<?= $listComments['id_commentaires']; ?>"
-                        class="updateComments" method="POST" style="display: none;">
-                        <label for="contenu-<?= $listComments['id_commentaires']; ?>">Contenu</label>
-                        <input type="text" name="contenu" id="contenu-<?= $listComments['id_commentaires']; ?>"
-                            class="contenu" value="<?= $listComments['contenu']; ?>">
+                    <form id="update-form-<?= $listComments->getId(); ?>"
+                        action="index.php?action=updateComment&id=<?= $listComments->getId(); ?>" class="updateComments"
+                        method="POST" style="display: none;">
+                        <label for="contenu-<?= $listComments->getId(); ?>">Contenu</label>
+                        <input type="text" name="contenu" id="contenu-<?= $listComments->getId(); ?>" class="contenu"
+                            value="<?= htmlspecialchars($listComments->getCommentaire()); ?>">
                         <input type="submit" value="Envoyer">
                         <button type="button" class="cancel-button"
-                            onclick="hideCommentForm('<?= $listComments['id_commentaires']; ?>')">Annuler</button>
+                            onclick="hideCommentForm('<?= $listComments->getId(); ?>')">Annuler</button>
                     </form>
-                    <button id="btn-comment-<?= $listComments['id_commentaires']; ?>" class="btnComment"
-                        onclick="toggleCommentForm('<?= $listComments['id_commentaires']; ?>')">Modifier</button>
+                    <button id="btn-comment-<?= $listComments->getId(); ?>" class="btnComment"
+                        onclick="toggleCommentForm('<?= $listComments->getId(); ?>')">Modifier</button>
                 </div>
             <?php endforeach; ?>
         </div>

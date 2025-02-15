@@ -15,15 +15,12 @@ switch ($action) {
 
     case 'inscription':
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['action'] === 'inscription') {
-            // Récupérer les données du formulaire
             $login = $_POST['login'] ?? '';
             $motDePasse = $_POST['mot_de_passe'] ?? '';
             $confirmMotDePasse = $_POST['confirm_mot_de_passe'] ?? '';
 
-            // Vérifier si les champs requis sont remplis
             if (!empty($login) && !empty($motDePasse) && !empty($confirmMotDePasse)) {
 
-                // Vérifier que les mots de passe correspondent
                 if ($motDePasse === $confirmMotDePasse) {
                     $user = Utilisateur::createUser($entityManager, $login, $motDePasse);
 
@@ -31,11 +28,9 @@ switch ($action) {
                     exit();
                 }
             } else {
-                // Si les mots de passe ne correspondent pas
                 $error = "Les mots de passe ne correspondent pas.";
             }
         } else {
-            // Si un champ est manquant
             $error = "Tous les champs doivent être remplis.";
         }
         break;
@@ -188,19 +183,19 @@ switch ($action) {
         break;
 
     case 'postComment':
-            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contenu'])) {
-                $messageId = isset($_POST['message_id']) ? (int) $_POST['message_id'] : null;
-                $userId = isset($_POST['user_id']) ? (int) $_POST['user_id'] : null;
-                $contenu = trim($_POST['contenu']);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contenu'])) {
+            $messageId = isset($_POST['message_id']) ? (int) $_POST['message_id'] : null;
+            $userId = isset($_POST['user_id']) ? (int) $_POST['user_id'] : null;
+            $contenu = trim($_POST['contenu']);
 
-                if ($messageId && $userId && !empty($contenu)) {
-                    Commentaire::postComment($entityManager, $messageId, $userId, $contenu);
-                    header("Location: index.php?action=blogDetails&id=$messageId");
-                    exit;
-                } else {
-                    echo "Erreur : tous les champs sont requis.";
-                }
+            if ($messageId && $userId && !empty($contenu)) {
+                Commentaire::postComment($entityManager, $messageId, $userId, $contenu);
+                header("Location: index.php?action=blogDetails&id=$messageId");
+                exit;
+            } else {
+                echo "Erreur : tous les champs sont requis.";
             }
+        }
         break;
 
     case 'deleteComment':
@@ -246,9 +241,32 @@ switch ($action) {
                     $login = $_POST['login'];
 
                     $user = Utilisateur::updateUser($entityManager, $idUser, $login);
+                    include('./Vue/backOffice.php');
                 }
             } else {
                 echo "Le login est nécessaire.";
+            }
+        }
+        break;
+
+    case 'updatePost':
+        if ($isAdmin) {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                if (!empty($_GET['id']) && !empty($_POST['contenu'])) {
+                    $postId = $_GET['id'];
+                    $contenu = $_POST['contenu'];
+                    $title = $_POST['title'];
+
+                    $post = Message::updatePost($entityManager, $postId, $title, $contenu);
+
+                    if ($post) {
+                        include('./Vue/backOffice.php');
+                    } else {
+                        echo "Erreur : Le post n'existe pas.";
+                    }
+                } else {
+                    echo "Erreur : Le contenu du post est requis.";
+                }
             }
         }
         break;

@@ -105,4 +105,10 @@ class Commentaire
         $entityManager->remove($rep);
         $entityManager->flush();
     }
+
+    public static function showAllComments(EntityManagerInterface $entityManager): array
+    {
+        $rep = $entityManager->getRepository(self::class)->findAll();
+        return $rep;
+    }
 }
