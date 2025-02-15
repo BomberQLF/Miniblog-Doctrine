@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../Style/style.css">
-    <script src="/Miniblog/Controller/index.js" defer></script>
+    <script src="index.js" defer></script>
     <title>Blog Details</title>
 </head>
 
@@ -18,12 +18,12 @@
         <?php endif; ?>
         <nav>
             <ul>
-                <li><a href="/Miniblog/Controller/index.php?action=home">Home</a></li>
-                <li><a href="/Miniblog/Controller/index.php?action=showArchives">Archives</a></li>
+                <li><a href="index.php?action=home">Home</a></li>
+                <li><a href="index.php?action=showArchives">Archives</a></li>
 
                 <?php if ($isAdmin): ?>
-                    <li><a href="/Miniblog/Controller/index.php?action=preCreatePost">Ajouter un Billet</a></li>
-                    <li><a href="/Miniblog/Controller/index.php?action=administration">Administration</a></li>
+                    <li><a href="index.php?action=preCreatePost">Ajouter un Billet</a></li>
+                    <li><a href="index.php?action=administration">Administration</a></li>
                 <?php endif; ?>
             </ul>
         </nav>
@@ -31,10 +31,10 @@
         <div class="right-nav">
             <ul>
                 <?php if ($loggedUser): ?>
-                    <li><a href="/Miniblog/Controller/index.php?action=profile">Mon Profil</a></li>
+                    <li><a href="index.php?action=profile">Mon Profil</a></li>
                 <?php else: ?>
-                    <li><a href="/Miniblog/Controller/index.php?action=login">Connexion</a></li>
-                    <li><a href="/Miniblog/Controller/index.php?action=register">Inscription</a></li>
+                    <li><a href="index.php?action=login">Connexion</a></li>
+                    <li><a href="index.php?action=register">Inscription</a></li>
                 <?php endif; ?>
             </ul>
         </div>
@@ -54,11 +54,6 @@
 
             if ($post): ?>
                 <div class="post-detail">
-                    <?php if (!empty($post['photo_post'])): ?>
-                        <img src="/Miniblog/uploads/<?php echo htmlspecialchars($post['photo_post']); ?>"
-                            alt="Image associée au billet" class="post-image">
-                    <?php endif; ?>
-
                     <h2 class="h2_post"><?php echo htmlspecialchars($post['titre']); ?></h2>
                     <p><?php echo htmlspecialchars($post['contenu']); ?></p>
                     <div class="post-meta">
@@ -68,7 +63,7 @@
                 <div class="comment_part">
                     <?php if ($loggedUser): ?>
                         <h2>Commentaires</h2>
-                        <form action="/Miniblog/Controller/index.php?action=postComment&id=<?= $post['id_billets']; ?>"
+                        <form action="index.php?action=postComment&id=<?= $post['id_billets']; ?>"
                             method="POST">
                             <div>
                                 <label for="commentContent">Votre commentaire :</label><br>
@@ -109,7 +104,7 @@
 
                                         <?php if ($isAdmin): ?>
                                             <a
-                                                href="/Miniblog/Controller/index.php?action=deleteComment&id=<?php echo $comment['id_commentaires']; ?>">Supprimer</a>
+                                                href="index.php?action=deleteComment&id=<?php echo $comment['id_commentaires']; ?>">Supprimer</a>
                                         <?php endif; ?>
 
                                         <?php if (isset($error)) {

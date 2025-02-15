@@ -68,7 +68,6 @@ switch ($action) {
         session_destroy();
         header("Location: index.php?action=home");
         exit();
-        break;
 
     case 'upload':
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['photo_profile'])) {
@@ -96,7 +95,7 @@ switch ($action) {
                     $loggedUser->setPhotoProfile($fileName);
                     $entityManager->persist($loggedUser);
                     $entityManager->flush();
-                    
+
                     header("Location: index.php?action=profile");
                     exit();
                 } else {
@@ -141,6 +140,21 @@ switch ($action) {
         } else {
             header("Location: index.php?action=login");
             exit();
+        }
+        break;
+
+    case 'blogDetails':
+        if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
+            $id = (int) $_GET['id'];
+            $message = Message::showMessageById($entityManager, $id);
+
+            if ($message) {
+                include('./Vue/blogDetails.php');
+            } else {
+                echo "Message non trouvé.";
+            }
+        } else {
+            echo "ID invalide.";
         }
         break;
 

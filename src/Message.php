@@ -97,4 +97,8 @@ class Message
         $entityManager->persist($message);
         $entityManager->flush();
     }
+    public static function showMessageById(EntityManagerInterface $entityManager, $id): ?Message 
+    {
+        return $entityManager->getRepository(self::class)->find($id);
+    }
 }
