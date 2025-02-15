@@ -158,6 +158,22 @@ switch ($action) {
         }
         break;
 
+    case 'postComment':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contenu'])) {
+            $messageId = isset($_POST['message_id']) ? (int) $_POST['message_id'] : null;
+            $userId = isset($_POST['user_id']) ? (int) $_POST['user_id'] : null;
+            $contenu = trim($_POST['contenu']);
+
+            if ($messageId && $userId && !empty($contenu)) {
+                Commentaire::postComment($entityManager, $messageId, $userId, $contenu);
+                header("Location: index.php?action=blogDetails&id=$messageId");
+                exit;
+            } else {
+                echo "Erreur : tous les champs sont requis.";
+            }
+        }
+        break;
+
     default:
         include('./Vue/miniblog.php');
         break;

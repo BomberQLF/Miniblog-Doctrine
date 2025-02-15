@@ -1,10 +1,12 @@
 <?php
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\EntityManagerInterface;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'commentaire')]
-class Commentaire {
+class Commentaire
+{
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue]
@@ -70,5 +72,30 @@ class Commentaire {
     public function setMessage(Message $message): void
     {
         $this->message = $message;
+    }
+
+    public static function getCommentsByMessageId(EntityManagerInterface $entityManager, int $messageId): array
+    {
+        return $entityManager->getRepository(self::class)->findBy(
+            ['message' => $messageId], 
+            ['postedAt' => 'DESC']
+        );
+    }
+
+    public static function postComment(EntityManagerInterface $entityManager, $messageId, $userId, $contenu): void
+    {
+        $message = $entityManager->getRepository(Message::class)->find($messageId);
+        $user = $entityManager->getRepository(Utilisateur::class)->find($userId);
+
+        if ($message && $user) {
+            $comment = new Commentaire();
+            $comment->setCommentaire($contenu);
+            $comment->setPostedAt(new \DateTime());
+            $comment->setUser($user);
+            $comment->setMessage($message);
+
+            $entityManager->persist($comment);
+            $entityManager->flush();
+        }
     }
 }

@@ -55,22 +55,24 @@
                     <h2 class="h2_post"><?php echo htmlspecialchars($message->getTitle()); ?></h2>
                     <p><?php echo htmlspecialchars($message->getContenu()); ?></p>
                     <div class="post-meta">
-                        <small class="small_post_date"><em>Date de publication : <?php echo htmlspecialchars($message->getPostedAt()?->format('Y-m-d H:i:s')); ?></em></small>
+                        <small class="small_post_date"><em>Date de publication :
+                                <?php echo htmlspecialchars($message->getPostedAt()?->format('Y-m-d H:i:s')); ?></em></small>
                     </div>
                 </div>
                 <div class="comment_part">
                     <?php if ($loggedUser): ?>
                         <h2>Commentaires</h2>
-                        <form action="index.php?action=postComment&id=<?= $post['id_billets']; ?>"
-                            method="POST">
+                        <form action="index.php?action=postComment" method="POST">
+                            <input type="hidden" name="message_id" value="<?= $_GET['id'] ?>">
+                            <input type="hidden" name="user_id" value="<?= $_SESSION['user_id']; ?>">
+
                             <div>
                                 <label for="commentContent">Votre commentaire :</label><br>
-                                <textarea name="commentContent" id="commentContent" rows="5"
-                                    placeholder="Écrivez votre commentaire ici..." required></textarea><br>
+                                <textarea name="contenu" id="commentContent" rows="5" placeholder="Écrivez votre commentaire ici..."
+                                    required></textarea><br>
                             </div>
                             <div>
                                 <button type="submit">Poster le commentaire</button>
-
                                 <?php if (isset($echecAjout)) {
                                     echo $echecAjout;
                                 } ?>
@@ -78,36 +80,36 @@
                         </form>
                     <?php endif; ?>
 
+                    <?php $comments = Commentaire::getCommentsByMessageId($entityManager, $_GET['id']); ?>
                     <?php if (!empty($comments)): ?>
                         <div class="comments-container">
-                            <!-- Bouton pour afficher/masquer les commentaires -->
                             <button id="toggle-comments-btn">Voir les commentaires</button>
 
-                            <!-- Section des commentaires, cachée par défaut -->
                             <div id="comments-section" class="comments-section" style="display: none;">
                                 <?php foreach ($comments as $comment): ?>
                                     <div class="comment">
-                                        <?php if (!empty($comment['photo_profile'])): ?>
-                                            <img src="/Miniblog/uploads/<?php echo $comment['photo_profile']; ?>"
-                                                alt="Photo de profil de <?php echo htmlspecialchars($comment['prenom']); ?>"
+                                        <!-- Affichage de la photo de profil -->
+                                        <?php if (!empty($comment->getUser()->getPhotoProfile())): ?>
+                                            <img src="./uploads/<?php echo htmlspecialchars($comment->getUser()->getPhotoProfile()); ?>"
+                                                alt="Photo de profil de <?php echo htmlspecialchars($comment->getUser()->getLogin()); ?>"
                                                 class="profile-photo">
                                         <?php else: ?>
-                                            <img src="/Miniblog/uploads/photo_default.png" alt="Photo de profil par défaut"
-                                                class="profile-photo">
+                                            <img src="./uploads/photo_default.png" alt="Photo de profil par défaut" class="profile-photo">
                                         <?php endif; ?>
 
-                                        <p><?php echo htmlspecialchars($comment['contenu']); ?></p>
-                                        <small>Posté par : <?php echo htmlspecialchars($comment['prenom'] . ' ' . $comment['nom']); ?>
-                                            le <?php echo htmlspecialchars($comment['date_post']); ?></small>
+                                        <!-- Affichage du commentaire -->
+                                        <p><?php echo htmlspecialchars($comment->getCommentaire()); ?></p>
 
+                                        <!-- Affichage de l'auteur et de la date -->
+                                        <small>
+                                            Posté par : <?php echo htmlspecialchars($comment->getUser()->getLogin()); ?>
+                                            le <?php echo $comment->getPostedAt()->format('d/m/Y à H:i'); ?>
+                                        </small>
+
+                                        <!-- Bouton de suppression si admin -->
                                         <?php if ($isAdmin): ?>
-                                            <a
-                                                href="index.php?action=deleteComment&id=<?php echo $comment['id_commentaires']; ?>">Supprimer</a>
+                                            <a href="index.php?action=deleteComment&id=<?php echo $comment->getId(); ?>">Supprimer</a>
                                         <?php endif; ?>
-
-                                        <?php if (isset($error)) {
-                                            echo $error;
-                                        } ?>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
