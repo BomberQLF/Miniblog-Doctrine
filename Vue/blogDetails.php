@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../Style/style.css">
+    <link rel="stylesheet" href="./Style/style.css">
     <script src="index.js" defer></script>
     <title>Blog Details</title>
 </head>
@@ -50,14 +50,12 @@
 
         <?php if (isset($_GET['id'])): ?>
             <?php
-            // $post = showPostById($_GET['id']);
-
-            if ($post): ?>
+            if ($message): ?>
                 <div class="post-detail">
-                    <h2 class="h2_post"><?php echo htmlspecialchars($post['titre']); ?></h2>
-                    <p><?php echo htmlspecialchars($post['contenu']); ?></p>
+                    <h2 class="h2_post"><?php echo htmlspecialchars($message->getTitle()); ?></h2>
+                    <p><?php echo htmlspecialchars($message->getContenu()); ?></p>
                     <div class="post-meta">
-                        <small class="small_post_date"><em>Date de publication : <?php echo htmlspecialchars($post['date_post']); ?></em></small>
+                        <small class="small_post_date"><em>Date de publication : <?php echo htmlspecialchars($message->getPostedAt()?->format('Y-m-d H:i:s')); ?></em></small>
                     </div>
                 </div>
                 <div class="comment_part">
