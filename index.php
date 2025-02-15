@@ -13,6 +13,34 @@ switch ($action) {
         include('./Vue/miniblog.php');
         break;
 
+    case 'inscription':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['action'] === 'inscription') {
+            // Récupérer les données du formulaire
+            $login = $_POST['login'] ?? '';
+            $motDePasse = $_POST['mot_de_passe'] ?? '';
+            $confirmMotDePasse = $_POST['confirm_mot_de_passe'] ?? '';
+
+            // Vérifier si les champs requis sont remplis
+            if (!empty($login) && !empty($motDePasse) && !empty($confirmMotDePasse)) {
+
+                // Vérifier que les mots de passe correspondent
+                if ($motDePasse === $confirmMotDePasse) {
+                    $user = Utilisateur::createUser($entityManager, $login, $motDePasse);
+
+                    include('./Vue/login.php');
+                    exit();
+                }
+            } else {
+                // Si les mots de passe ne correspondent pas
+                $error = "Les mots de passe ne correspondent pas.";
+            }
+        } else {
+            // Si un champ est manquant
+            $error = "Tous les champs doivent être remplis.";
+        }
+        break;
+
+
     case 'showArchives':
         include('./Vue/archives.php');
         break;
@@ -27,7 +55,7 @@ switch ($action) {
 
     case 'administration':
         if ($isAdmin) {
-            include('./Vue/admin.php');
+            include('./Vue/backOffice.php');
         } else {
             echo "Accès refusé.";
         }
@@ -54,6 +82,7 @@ switch ($action) {
                 exit();
             } else {
                 header("Location: index.php?action=login&error=invalid");
+                echo 'Identifiants invalides';
                 exit();
             }
         }
@@ -159,7 +188,6 @@ switch ($action) {
         break;
 
     case 'postComment':
-        if ($isAdmin) {
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contenu'])) {
                 $messageId = isset($_POST['message_id']) ? (int) $_POST['message_id'] : null;
                 $userId = isset($_POST['user_id']) ? (int) $_POST['user_id'] : null;
@@ -173,7 +201,6 @@ switch ($action) {
                     echo "Erreur : tous les champs sont requis.";
                 }
             }
-        }
         break;
 
     case 'deleteComment':
@@ -185,13 +212,43 @@ switch ($action) {
                     if ($idComment) {
                         Commentaire::deleteCommentById($entityManager, $idComment);
 
-                        include('./Vue/archives.php'); 
+                        include('./Vue/archives.php');
                     } else {
                         echo "ID du commentaire invalide.";
                     }
                 } else {
                     echo "L'ID n'exite pas.";
                 }
+            }
+        }
+        break;
+
+    case 'deleteUser':
+        if ($isAdmin) {
+            if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+                if (!empty($_GET['id'])) {
+                    $idUser = $_GET['id'];
+                    Utilisateur::deleteUser($entityManager, $idUser);
+                    include('./Vue/backOffice.php');
+                    exit();
+                } else {
+                    echo "ID de l'utilisateur manquant.";
+                }
+            }
+        }
+        break;
+
+    case 'updateUser':
+        if ($isAdmin) {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                if (!empty($_GET['id']) && !empty($_POST['login'])) {
+                    $idUser = $_GET['id'];
+                    $login = $_POST['login'];
+
+                    $user = Utilisateur::updateUser($entityManager, $idUser, $login);
+                }
+            } else {
+                echo "Le login est nécessaire.";
             }
         }
         break;

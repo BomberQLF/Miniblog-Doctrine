@@ -85,11 +85,11 @@ class Utilisateur
     }
 
     public static function isLoggedIn(EntityManagerInterface $entityManager): ?Utilisateur
-    {   
+    {
         if (!isset($_SESSION['user_id'])) {
-            return null; 
+            return null;
         }
-    
+
         return $entityManager->getRepository(self::class)->find($_SESSION['user_id']);
     }
 
@@ -97,5 +97,29 @@ class Utilisateur
     {
         $user = self::isLoggedIn($entityManager);
         return $user && $user->getIdUser() === 4;
+    }
+
+    public static function updateUser(EntityManagerInterface $entityManager, int $id, string $login): ?self
+    {
+        $user = $entityManager->getRepository(self::class)->find($id);
+        $user->setLogin($login);
+
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return $user;
+    }
+
+    public static function deleteUser(EntityManagerInterface $entityManager, int $id): void
+    {
+        $user = $entityManager->getRepository(Utilisateur::class)->find($id);
+        $entityManager->remove($user);
+        $entityManager->flush();
+    }
+
+    public static function showAllUsers(EntityManagerInterface $entityManager): array
+    {
+        $rep = $entityManager->getRepository(self::class)->findAll();
+        return $rep;
     }
 }
