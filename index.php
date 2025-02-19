@@ -5,6 +5,7 @@ require_once('bootstrap.php');
 $loggedUser = Utilisateur::isLoggedIn($entityManager);
 $isAdmin = Utilisateur::isAdmin($entityManager);
 $allMessages = Message::getAllMessages($entityManager);
+// $allComments = Commentaire::showAllComments($entityManager);
 
 $action = $_GET['action'] ?? '';
 
@@ -218,6 +219,25 @@ switch ($action) {
         }
         break;
 
+    case 'deleteCommentBo':
+        if ($isAdmin) {
+            if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+                if (!empty($_GET['id'])) {
+                    $idComment = $_GET['id'];
+                    if ($idComment) {
+                        Commentaire::deleteCommentById($entityManager, $idComment);
+                        include('./Vue/backOffice.php');
+                    } else {
+                        include('./Vue/miniblog.php');
+                        echo "ID du commentaire invalide.";
+                    }
+                } else {
+                    echo "L'ID n'exite pas.";
+                }
+            }
+        }
+        break;
+
     case 'deleteUser':
         if ($isAdmin) {
             if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -266,6 +286,31 @@ switch ($action) {
                     }
                 } else {
                     echo "Erreur : Le contenu du post est requis.";
+                }
+            }
+        }
+        break;
+
+    case 'updateComment':
+        if ($isAdmin) {
+            if ($_SERVER['REQUEST_METHOD'] === "POST") {
+                if (!isset($_GET['id']) || !isset($_POST['commentaire'])) {
+                    die("Erreur : Paramètres manquants.");
+                }
+
+                $commentId = (int) $_GET['id'];
+                $commentaire = trim($_POST['commentaire']);
+
+                if ($commentaire === '') {
+                    die("Erreur : Le commentaire est vide.");
+                }
+
+                $comment = Commentaire::updateComment($entityManager, $commentId, $commentaire);
+
+                if ($comment) {
+                    include('./Vue/backOffice.php');
+                } else {
+                    die("Erreur : Le commentaire n'existe pas.");
                 }
             }
         }

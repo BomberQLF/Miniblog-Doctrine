@@ -122,14 +122,14 @@
                 <div class="comments-item">
                     <p class="comment-title"><?= htmlspecialchars($listComments->getCommentaire()) ?></p>
                     <small><?= $listComments->getPostedAt()->format('Y-m-d H:i:s'); ?></small>
-                    <a href="index.php?action=deleteComment&id=<?= $listComments->getId(); ?>"
+                    <a href="index.php?action=deleteCommentBo&id=<?= $listComments->getId(); ?>"
                         class="delete-post">Supprimer</a>
 
                     <form id="update-form-<?= $listComments->getId(); ?>"
                         action="index.php?action=updateComment&id=<?= $listComments->getId(); ?>" class="updateComments"
                         method="POST" style="display: none;">
                         <label for="contenu-<?= $listComments->getId(); ?>">Contenu</label>
-                        <input type="text" name="contenu" id="contenu-<?= $listComments->getId(); ?>" class="contenu"
+                        <input type="text" name="commentaire" id="contenu-<?= $listComments->getId(); ?>" class="contenu"
                             value="<?= htmlspecialchars($listComments->getCommentaire()); ?>">
                         <input type="submit" value="Envoyer">
                         <button type="button" class="cancel-button"

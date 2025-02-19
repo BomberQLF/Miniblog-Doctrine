@@ -108,7 +108,20 @@ class Commentaire
 
     public static function showAllComments(EntityManagerInterface $entityManager): array
     {
-        $rep = $entityManager->getRepository(self::class)->findAll();
-        return $rep;
+        return $entityManager->getRepository(self::class)->findAll();
+    }
+
+    public static function updateComment(EntityManagerInterface $entityManager, $idComment, $contenu): bool
+    {
+        $comment = $entityManager->getRepository(self::class)->find($idComment);
+        
+        if (!$comment) {
+            return false;
+        }
+    
+        $comment->setCommentaire($contenu);
+        $entityManager->flush();
+        
+        return true;
     }
 }
