@@ -896,6 +896,9 @@ a {
 
 .updateComments {
     display: none;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
 }
 
 .post-image {

@@ -1,5 +1,5 @@
 function showUpdateForm(userId) {
-  const formContainer = document.getElementById(`update-form-${userId}`);
+  const formContainer = document.getElementById(`user-update-form-${userId}`);
 
   // Vérifier si le formulaire est déjà visible
   if (formContainer.style.display === "block") {
@@ -11,7 +11,7 @@ function showUpdateForm(userId) {
 }
 
 function hideUpdateForm(userId) {
-  const formContainer = document.getElementById(`update-form-${userId}`);
+  const formContainer = document.getElementById(`user-update-form-${userId}`);
   formContainer.style.display = "none"; 
 }
 
@@ -31,24 +31,37 @@ function hidePostUpdateForm(postId) {
 }
 
 function toggleCommentForm(commentId) {
+  console.log(`toggleCommentForm called with commentId: ${commentId}`);
   const formContainer = document.getElementById(`update-form-${commentId}`);
-  const btnComment = document.querySelector('.btnComment');
+  const btnComment = document.getElementById(`btn-comment-${commentId}`);
 
-  // Vérifier si le formulaire est déjà visible
-  if (formContainer.style.display === "block") {
-      formContainer.style.display = "none";
-      btnComment.style.display = "none";
+  if (formContainer) {
+    console.log(`Form container found for commentId: ${commentId}`);
+    console.log(`Current display style: ${formContainer.style.display}`);
+    if (formContainer.style.display === "block" || formContainer.style.display === "") {
+        formContainer.style.display = "none";
+        btnComment.textContent = "Modifier";
+    } else {
+      formContainer.style.display = "block";
+      btnComment.textContent = "Annuler";
+    }
+    console.log(`New display style: ${formContainer.style.display}`);
   } else {
-    formContainer.style.display = "block";
+    console.log(`Form container not found for commentId: ${commentId}`);
   }
 }
 
 function hideCommentForm(commentId) {
+  console.log(`hideCommentForm called with commentId: ${commentId}`);
   const formContainer = document.getElementById(`update-form-${commentId}`);
-  const btnComment = document.querySelector('.btnComment');
+  const btnComment = document.getElementById(`btn-comment-${commentId}`);
 
-  formContainer.style.display = "none";
-  btnComment.style.display = "block";
+  if (formContainer) {
+    formContainer.style.display = "none";
+    btnComment.textContent = "Modifier";
+  } else {
+    console.log(`Form container not found for commentId: ${commentId}`);
+  }
 }
 
 // Code pour limiter le nombre de char et cacher le surplus du post

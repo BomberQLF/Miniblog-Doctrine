@@ -55,15 +55,16 @@
                         onclick="showUpdateForm(<?php echo $allUser->getIdUser(); ?>)">Modifier</button>
 
                     <!-- Formulaire caché par défaut -->
-                    <div id="update-form-<?php echo $allUser->getIdUser(); ?>" class="update-form" style="display: none;">
+                    <div id="user-update-form-<?php echo $allUser->getIdUser(); ?>" class="update-form"
+                        style="display: none;">
                         <form action="index.php?action=updateUser&id=<?php echo $allUser->getIdUser(); ?>" method="POST"
                             class="update-form">
                             <h1 class="update-title">Mettre à Jour l'Utilisateur</h1>
 
                             <!-- Champ de mise à jour du login uniquement -->
-                            <label for="login-<?php echo $allUser->getIdUser(); ?>" class="update-label">Login
+                            <label for="user-login-<?php echo $allUser->getIdUser(); ?>" class="update-label">Login
                                 :</label>
-                            <input type="text" name="login" id="login-<?php echo $allUser->getIdUser(); ?>"
+                            <input type="text" name="login" id="user-login-<?php echo $allUser->getIdUser(); ?>"
                                 class="update-input" value="<?php echo htmlspecialchars($allUser->getLogin()); ?>"
                                 required><br>
 
@@ -122,14 +123,14 @@
                 <div class="comments-item">
                     <p class="comment-title"><?= htmlspecialchars($listComments->getCommentaire()) ?></p>
                     <small><?= $listComments->getPostedAt()->format('Y-m-d H:i:s'); ?></small>
-                    <a href="index.php?action=deleteComment&id=<?= $listComments->getId(); ?>"
+                    <a href="index.php?action=deleteCommentBo&id=<?= $listComments->getId(); ?>"
                         class="delete-post">Supprimer</a>
 
                     <form id="update-form-<?= $listComments->getId(); ?>"
                         action="index.php?action=updateComment&id=<?= $listComments->getId(); ?>" class="updateComments"
                         method="POST" style="display: none;">
                         <label for="contenu-<?= $listComments->getId(); ?>">Contenu</label>
-                        <input type="text" name="contenu" id="contenu-<?= $listComments->getId(); ?>" class="contenu"
+                        <input type="text" name="commentaire" id="contenu-<?= $listComments->getId(); ?>" class="contenu"
                             value="<?= htmlspecialchars($listComments->getCommentaire()); ?>">
                         <input type="submit" value="Envoyer">
                         <button type="button" class="cancel-button"
@@ -138,6 +139,7 @@
                     <button id="btn-comment-<?= $listComments->getId(); ?>" class="btnComment"
                         onclick="toggleCommentForm('<?= $listComments->getId(); ?>')">Modifier</button>
                 </div>
+                <hr>
             <?php endforeach; ?>
         </div>
     </div>
