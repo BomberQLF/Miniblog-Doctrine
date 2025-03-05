@@ -5,7 +5,6 @@ require_once('bootstrap.php');
 $loggedUser = Utilisateur::isLoggedIn($entityManager);
 $isAdmin = Utilisateur::isAdmin($entityManager);
 $allMessages = Message::getAllMessages($entityManager);
-// $allComments = Commentaire::showAllComments($entityManager);
 
 $action = $_GET['action'] ?? '';
 

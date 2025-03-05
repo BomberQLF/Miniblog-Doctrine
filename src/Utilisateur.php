@@ -96,7 +96,7 @@ class Utilisateur
     public static function isAdmin(EntityManagerInterface $entityManager): bool
     {
         $user = self::isLoggedIn($entityManager);
-        return $user && $user->getIdUser() === 4;
+        return $user && $user->getIdUser() === 9;
     }
 
     public static function updateUser(EntityManagerInterface $entityManager, int $id, string $login): ?self
